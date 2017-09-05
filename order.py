@@ -1,7 +1,8 @@
 import sys
 import traceback
 
-from PyQt5.QtGui import QStandardItemModel, QStandardItem
+from PyQt5.QtCore import Qt
+from PyQt5.QtGui import QStandardItemModel, QStandardItem, QBrush
 from PyQt5.QtWidgets import QWidget, QApplication, QTableView, QHBoxLayout
 from copy import copy
 
@@ -29,6 +30,9 @@ class MyWidget(QWidget):
         row = ['37000033', 'SZ', '0000002', '万科A', '买入', '100']
         for _, ele in enumerate(row):
             item.append(QStandardItem(ele))
+
+
+        item[4].setData(QBrush(Qt.red),Qt.ForegroundRole)
 
         model.appendRow(item)
 

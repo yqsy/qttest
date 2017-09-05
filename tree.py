@@ -3,15 +3,42 @@ import traceback
 
 from PyQt5.QtCore import Qt
 from PyQt5.QtGui import QStandardItemModel, QStandardItem, QBrush, QColor
-from PyQt5.QtWidgets import QWidget, QApplication, QTreeView, QHBoxLayout, QStyledItemDelegate
+from PyQt5.QtWidgets import QWidget, QApplication, QTreeView, QHBoxLayout, QStyledItemDelegate, QStyleOptionProgressBar, \
+    QStyle
 
 
 class MyDelegate(QStyledItemDelegate):
     """
     渲染treeview中的一栏成progressbar
     """
+
     def paint(self, QPainter, QStyleOptionViewItem, QModelIndex):
         super().paint(QPainter, QStyleOptionViewItem, QModelIndex)
+
+        # print('({} {})'.format(QModelIndex.row(), QModelIndex.column()))
+        if QModelIndex.column() == 4:
+            progressbar = QStyleOptionProgressBar()
+            progressbar.rect = QStyleOptionViewItem.rect
+
+            # 获取当前数值和最大数值like:1500/3600
+            current_progress = QModelIndex.model().data(QModelIndex, Qt.DisplayRole)
+            two_ele = current_progress.split('/')
+            current = int(two_ele[0])
+            max = int(two_ele[1])
+
+            # 设置progressbar 进度
+            progressbar.minimum = 0
+            progressbar.maximum = max
+            progressbar.progress = current
+
+            # 居中
+            progressbar.textAlignment = Qt.AlignCenter
+
+            # 文字
+            progressbar.text = current_progress
+            progressbar.textVisible = True
+
+            QApplication.style().drawControl(QStyle.CE_ProgressBar, progressbar, QPainter)
 
 
 class MyWidget(QWidget):
@@ -57,9 +84,9 @@ class MyWidget(QWidget):
         row1_1[2].setData(QBrush(Qt.red), Qt.ForegroundRole)
         row1_1_1[2].setData(QBrush(Qt.red), Qt.ForegroundRole)
 
-        row1[5].setData(QBrush(QColor(43,145,175)), Qt.ForegroundRole)
-        row1_1[5].setData(QBrush(QColor(43,145,175)), Qt.ForegroundRole)
-        row1_1_1[5].setData(QBrush(QColor(43,145,175)), Qt.ForegroundRole)
+        row1[5].setData(QBrush(QColor(43, 145, 175)), Qt.ForegroundRole)
+        row1_1[5].setData(QBrush(QColor(43, 145, 175)), Qt.ForegroundRole)
+        row1_1_1[5].setData(QBrush(QColor(43, 145, 175)), Qt.ForegroundRole)
 
         return item_model
 

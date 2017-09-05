@@ -4,7 +4,7 @@ import traceback
 from PyQt5.QtCore import Qt
 from PyQt5.QtGui import QStandardItemModel, QStandardItem, QBrush, QColor
 from PyQt5.QtWidgets import QWidget, QApplication, QTreeView, QHBoxLayout, QStyledItemDelegate, QStyleOptionProgressBar, \
-    QStyle
+    QStyle, QProgressBar
 
 
 class MyDelegate(QStyledItemDelegate):
@@ -18,6 +18,19 @@ class MyDelegate(QStyledItemDelegate):
         # print('({} {})'.format(QModelIndex.row(), QModelIndex.column()))
         if QModelIndex.column() == 4:
             progressbar = QStyleOptionProgressBar()
+            # style
+            view_bar = QProgressBar()
+
+            view_bar.setStyleSheet('border: 2px solid orange;'
+                                   'border-radius: 5px;'
+                                   'text-align: center;'
+                                   'background-color: grey;'
+                                   'background-color: orange;'
+                                   )
+
+            progressbar.initFrom(view_bar)
+
+            # 位置
             progressbar.rect = QStyleOptionViewItem.rect
 
             # 获取当前数值和最大数值like:1500/3600
@@ -38,7 +51,9 @@ class MyDelegate(QStyledItemDelegate):
             progressbar.text = current_progress
             progressbar.textVisible = True
 
-            QApplication.style().drawControl(QStyle.CE_ProgressBar, progressbar, QPainter)
+            # QPainter.save()
+            view_bar.style().drawControl(QStyle.CE_ProgressBar, progressbar, QPainter, view_bar)
+            # QPainter.restore()
 
 
 class MyWidget(QWidget):

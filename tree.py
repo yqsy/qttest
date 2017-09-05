@@ -21,12 +21,12 @@ class MyDelegate(QStyledItemDelegate):
             # style
             view_bar = QProgressBar()
 
-            view_bar.setStyleSheet('border: 2px solid orange;'
-                                   'border-radius: 5px;'
-                                   'text-align: center;'
-                                   'background-color: grey;'
-                                   'background-color: orange;'
-                                   )
+            view_bar.setStyleSheet(
+                'border-radius: 25px;'
+                'border: 2px solid;'
+                'background-color: grey;'
+                'background-color: orange;'
+            )
 
             progressbar.initFrom(view_bar)
 
@@ -48,7 +48,7 @@ class MyDelegate(QStyledItemDelegate):
             progressbar.textAlignment = Qt.AlignCenter
 
             # 文字
-            progressbar.text = current_progress
+            progressbar.text = '{0:.2f}%'.format(current / max)
             progressbar.textVisible = True
 
             # QPainter.save()

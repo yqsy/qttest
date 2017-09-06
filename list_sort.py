@@ -6,15 +6,6 @@ from PyQt5.QtGui import QStandardItemModel, QStandardItem
 from PyQt5.QtWidgets import QWidget, QApplication, QHBoxLayout, QListView, QTableView
 
 
-class SortFilterProxyModel(QSortFilterProxyModel):
-    def filterAcceptsRow(self, p_int, QModelIndex):
-        # 只按体重来排序
-        if self.filterKeyColumn() == 2:
-            pass
-
-        return super().filterAcceptsRow(p_int, QModelIndex)
-
-
 class MyWidget(QWidget):
     def __init__(self):
         super().__init__()

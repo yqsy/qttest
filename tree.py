@@ -21,12 +21,11 @@ class MyDelegate(QStyledItemDelegate):
             # style
             view_bar = QProgressBar()
 
-            view_bar.setStyleSheet(
-                'border-radius: 25px;'
-                'border: 2px solid;'
-                'background-color: grey;'
-                'background-color: orange;'
-            )
+            view_bar.setStyleSheet('QProgressBar {'
+                                   'border-radius: 25px;'
+                                   'border: 2px solid;'
+                                   'background-color: pink;}'
+                                   )
 
             progressbar.initFrom(view_bar)
 

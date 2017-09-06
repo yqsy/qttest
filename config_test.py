@@ -60,6 +60,9 @@ class MyWidget(QWidget):
 
             setting.setValue('iplist', iplistnew)
 
+        # 还可以存储对象,不过不可以编辑文本来修改啦
+        setting.setValue('listtest', ['1', ['1_1', '1_2']])
+
         save_button.clicked.connect(saveconfig)
 
         vbox = QVBoxLayout()

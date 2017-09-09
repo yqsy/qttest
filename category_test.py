@@ -32,20 +32,19 @@ class YqProxyStyle(QProxyStyle):
 
         if QStyle_ControlElement == QStyle.CE_ItemViewItem:
             if isinstance(widget, YqCategoryBaseView):
+                # 画拖动目的地址的!!!
                 # https://doc.qt.io/qt-5/qpainter.html#RenderHint-enum
-
-
-                QPainter.setRenderHint(QPainter.Antialiasing, True)  # 抗锯齿
-                pen = QPen()
-                pen.setStyle(Qt.SolidLine)
-                pen.setColor(QColor('#3498DB'))
-                pen.setWidth(1)
-                QPainter.setPen(pen)
-                QPainter.setBrush(Qt.NoBrush)
-
-                rect = widget.visualItemRect(widget.currentItem())
-                rect.setWidth(rect.width() - 2)
-                QPainter.drawRect(rect)
+                # QPainter.setRenderHint(QPainter.Antialiasing, True)  # 抗锯齿
+                # pen = QPen()
+                # pen.setStyle(Qt.SolidLine)
+                # pen.setColor(QColor('#3498DB'))
+                # pen.setWidth(1)
+                # QPainter.setPen(pen)
+                # QPainter.setBrush(Qt.NoBrush)
+                #
+                # rect = widget.visualItemRect(widget.currentItem())
+                # rect.setWidth(rect.width() - 2)
+                # QPainter.drawRect(rect)
 
 
 class YqCategoryItemBase(QTreeWidgetItem):

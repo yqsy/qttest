@@ -15,7 +15,7 @@ class YqProxyStyle(QProxyStyle):
         # QStyle_ControlElement enum控件类型
         # http://doc.qt.io/qt-5/qstyle.html#ControlElement-enum
 
-        # QStyleOption QStyleOptionViewItem
+        # QStyleOption QStyleOptionViewItem 可以得到QModelIndex哦
         # The QStyleOptionViewItem class is used to describe the parameters used to draw an item in a view widget.
         # http://doc.qt.io/qt-5/qstyleoptionviewitem.html
 
@@ -32,23 +32,32 @@ class YqProxyStyle(QProxyStyle):
 
         if QStyle_ControlElement == QStyle.CE_ItemViewItem:
             if isinstance(widget, YqCategoryBaseView):
-                # 画拖动目的地址的!!!
-                # https://doc.qt.io/qt-5/qpainter.html#RenderHint-enum
-                # QPainter.setRenderHint(QPainter.Antialiasing, True)  # 抗锯齿
-                # pen = QPen()
-                # pen.setStyle(Qt.SolidLine)
-                # pen.setColor(QColor('#3498DB'))
-                # pen.setWidth(1)
-                # QPainter.setPen(pen)
-                # QPainter.setBrush(Qt.NoBrush)
-                #
-                # rect = widget.visualItemRect(widget.currentItem())
-                # rect.setWidth(rect.width() - 2)
-                # QPainter.drawRect(rect)
+                # 画的item
+                item = widget.itemFromIndex(QStyleOption.index)
+
+                if not isinstance(item, QTreeWidgetItem):
+                    raise Exception('e')
+
+
+
+                    # 画拖动目的地址的!!!
+                    # https://doc.qt.io/qt-5/qpainter.html#RenderHint-enum
+                    # QPainter.setRenderHint(QPainter.Antialiasing, True)  # 抗锯齿
+                    # pen = QPen()
+                    # pen.setStyle(Qt.SolidLine)
+                    # pen.setColor(QColor('#3498DB'))
+                    # pen.setWidth(1)
+                    # QPainter.setPen(pen)
+                    # QPainter.setBrush(Qt.NoBrush)
+                    #
+                    # rect = widget.visualItemRect(widget.currentItem())
+                    # rect.setWidth(rect.width() - 2)
+                    # QPainter.drawRect(rect)
 
 
 class YqCategoryItemBase(QTreeWidgetItem):
-    pass
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
 
 
 class YqCategoryBaseView(QTreeWidget):
@@ -107,10 +116,13 @@ class YqCategoryBaseView(QTreeWidget):
 
         self.setStyle(YqProxyStyle())
 
+    def draw_item_body(self):
+        pass
+
 
 class MyWidget(QWidget):
-    def __init__(self):
-        super().__init__()
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
         self.init_ui()
 
     def init_ui(self):
@@ -120,8 +132,11 @@ class MyWidget(QWidget):
         hbox.addWidget(treewidget)
         self.setLayout(hbox)
 
+        num = 0
+
         for _ in range(10):
-            treewidget.addTopLevelItem(QTreeWidgetItem(['1']))
+            treewidget.addTopLevelItem(YqCategoryItemBase([str(num)]))
+            num = num + 1
 
 
 def main():

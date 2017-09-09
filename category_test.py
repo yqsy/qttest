@@ -2,13 +2,15 @@ import sys
 import traceback
 
 from PyQt5.QtCore import Qt
+from PyQt5.QtGui import QPen, QColor
 from PyQt5.QtWidgets import QWidget, QApplication, QHBoxLayout, QTreeWidget, QTreeWidgetItem, QFrame, QScrollBar, \
     QStyle, QProxyStyle
 
 
 class YqProxyStyle(QProxyStyle):
     def drawControl(self, QStyle_ControlElement, QStyleOption, QPainter, widget=None):
-        super().drawControl(QStyle_ControlElement, QStyleOption, QPainter, widget)
+        # 全部自己画吧
+        # super().drawControl(QStyle_ControlElement, QStyleOption, QPainter, widget)
 
         # QStyle_ControlElement enum控件类型
         # http://doc.qt.io/qt-5/qstyle.html#ControlElement-enum
@@ -26,11 +28,24 @@ class YqProxyStyle(QProxyStyle):
         # print(type(QStyle_ControlElement))
         # print(type(QStyleOption))
         # print(type(QPainter))
-        #print(type(widget))
+        # print(type(widget))
 
         if QStyle_ControlElement == QStyle.CE_ItemViewItem:
             if isinstance(widget, YqCategoryBaseView):
-                print('yeal')
+                # https://doc.qt.io/qt-5/qpainter.html#RenderHint-enum
+
+
+                QPainter.setRenderHint(QPainter.Antialiasing, True)  # 抗锯齿
+                pen = QPen()
+                pen.setStyle(Qt.SolidLine)
+                pen.setColor(QColor('#3498DB'))
+                pen.setWidth(1)
+                QPainter.setPen(pen)
+                QPainter.setBrush(Qt.NoBrush)
+
+                rect = widget.visualItemRect(widget.currentItem())
+                rect.setWidth(rect.width() - 2)
+                QPainter.drawRect(rect)
 
 
 class YqCategoryItemBase(QTreeWidgetItem):
@@ -91,7 +106,6 @@ class YqCategoryBaseView(QTreeWidget):
         # TODO: 自绘滚动条
         # self.scroll_bar = YqScrollBar(self);
 
-        # TODO: style
         self.setStyle(YqProxyStyle())
 
 
@@ -107,7 +121,8 @@ class MyWidget(QWidget):
         hbox.addWidget(treewidget)
         self.setLayout(hbox)
 
-        treewidget.addTopLevelItem(QTreeWidgetItem(['1']))
+        for _ in range(10):
+            treewidget.addTopLevelItem(QTreeWidgetItem(['1']))
 
 
 def main():

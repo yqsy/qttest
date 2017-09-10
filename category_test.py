@@ -1,10 +1,10 @@
 import sys
 import traceback
 
-from PyQt5.QtCore import Qt
-from PyQt5.QtGui import QPen, QColor
+from PyQt5.QtCore import Qt, QSize
+from PyQt5.QtGui import QPen, QColor, QIcon, QPixmap
 from PyQt5.QtWidgets import QWidget, QApplication, QHBoxLayout, QTreeWidget, QTreeWidgetItem, QFrame, QScrollBar, \
-    QStyle, QProxyStyle
+    QStyle, QProxyStyle, QStyleOptionViewItem
 
 
 class YqProxyStyle(QProxyStyle):
@@ -16,7 +16,7 @@ class YqProxyStyle(QProxyStyle):
         # http://doc.qt.io/qt-5/qstyle.html#ControlElement-enum
 
         # QStyleOption QStyleOptionViewItem 可以得到QModelIndex哦
-        # The QStyleOptionViewItem class is used to describe the parameters used to draw an item in a view widget.
+        # QStyleOptionViewItem contains all the information that QStyle functions need to draw the items for Qt's model/view classes.
         # http://doc.qt.io/qt-5/qstyleoptionviewitem.html
 
         # QPainter
@@ -35,29 +35,62 @@ class YqProxyStyle(QProxyStyle):
                 # 画的item
                 item = widget.itemFromIndex(QStyleOption.index)
 
-                if not isinstance(item, QTreeWidgetItem):
-                    raise Exception('e')
+                item.draw_item_body(QPainter, QStyleOption)
 
 
-
-                    # 画拖动目的地址的!!!
-                    # https://doc.qt.io/qt-5/qpainter.html#RenderHint-enum
-                    # QPainter.setRenderHint(QPainter.Antialiasing, True)  # 抗锯齿
-                    # pen = QPen()
-                    # pen.setStyle(Qt.SolidLine)
-                    # pen.setColor(QColor('#3498DB'))
-                    # pen.setWidth(1)
-                    # QPainter.setPen(pen)
-                    # QPainter.setBrush(Qt.NoBrush)
-                    #
-                    # rect = widget.visualItemRect(widget.currentItem())
-                    # rect.setWidth(rect.width() - 2)
-                    # QPainter.drawRect(rect)
+                # 画拖动目的地址的!!!
+                # https://doc.qt.io/qt-5/qpainter.html#RenderHint-enum
+                # QPainter.setRenderHint(QPainter.Antialiasing, True)  # 抗锯齿
+                # pen = QPen()
+                # pen.setStyle(Qt.SolidLine)
+                # pen.setColor(QColor('#3498DB'))
+                # pen.setWidth(1)
+                # QPainter.setPen(pen)
+                # QPainter.setBrush(Qt.NoBrush)
+                #
+                # rect = widget.visualItemRect(widget.currentItem())
+                # rect.setWidth(rect.width() - 2)
+                # QPainter.drawRect(rect)
 
 
 class YqCategoryItemBase(QTreeWidgetItem):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
+
+    def draw_item_body(self, QPainter, QStyleOption):
+        if not isinstance(QStyleOption, QStyleOptionViewItem):
+            raise Exception('fuck')
+
+        selected = True if QStyleOption.state & QStyle.State_Selected else False
+
+        # 通过item可以得到整个treewidget哦!
+        # .style又回到了YqProxyStyle
+        style = self.treeWidget().style()
+
+        # 得到在treewidget中要画的方块?
+        rect = style.subElementRect(QStyle.SE_ItemViewItemDecoration, QStyleOption, self.treeWidget())
+
+        if not QStyleOption.icon.isNull():
+            icon_size = 14
+            rect.adjust(-6, 0, 0, 0)
+            rect.setTop(QStyleOption.rect.top() + (QStyleOption.rect.height() - icon_size) / 2)
+            rect.setWidth(icon_size)
+            rect.setHeight(icon_size)
+            if selected:
+                QStyleOption.icon.paint(QPainter, rect, Qt.AlignCenter, QIcon.Selected)
+            else:
+                QStyleOption.icon.paint(QPainter, rect, Qt.AlignCenter, QIcon.Normal)
+
+
+class YqFloderItem(YqCategoryItemBase):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+
+        icon = QIcon()
+        icon.addPixmap(QPixmap('./icon/comments.png'), QIcon.Normal)
+        icon.addPixmap(QPixmap('./icon/comments_selected.png'), QIcon.Selected)
+
+        self.setIcon(0, icon)
 
 
 class YqCategoryBaseView(QTreeWidget):
@@ -135,8 +168,13 @@ class MyWidget(QWidget):
         num = 0
 
         for _ in range(10):
-            treewidget.addTopLevelItem(YqCategoryItemBase([str(num)]))
+            treewidget.addTopLevelItem(YqFloderItem([str(num)]))
             num = num + 1
+
+        root = treewidget.invisibleRootItem()
+
+        for _ in range(3):
+            root.addChild(YqFloderItem(root, [str(num)]))
 
 
 def main():

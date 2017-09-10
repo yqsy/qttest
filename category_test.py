@@ -32,7 +32,7 @@ class YqProxyStyle(QProxyStyle):
 
         if QStyle_ControlElement == QStyle.CE_ItemViewItem:
             if isinstance(widget, YqCategoryBaseView):
-                # 画的item
+                # 通过QModuleIndex定位
                 item = widget.itemFromIndex(QStyleOption.index)
 
                 item.draw_item_body(QPainter, QStyleOption)
@@ -51,6 +51,35 @@ class YqProxyStyle(QProxyStyle):
                 # rect = widget.visualItemRect(widget.currentItem())
                 # rect.setWidth(rect.width() - 2)
                 # QPainter.drawRect(rect)
+
+    def drawPrimitive(self, QStyle_PrimitiveElement, QStyleOption, QPainter, widget=None):
+        if QStyle_PrimitiveElement == QStyle.PE_PanelItemViewRow:
+            # print(widget)
+            # print(QStyleOption)
+
+            # 通过point定位
+            item = widget.itemAt(QStyleOption.rect.center())
+
+            if isinstance(item, YqFloderItem):
+                if QStyleOption.state & QStyle.State_Selected:
+                    rect = QRect(QStyleOption.rect)
+                    rect.setWidth(QPainter.window().width())
+                    margin = (QStyleOption.rect.height() - 20) / 2
+                    rect.adjust(0, margin, 0, -margin)
+
+                    is_focuse = QStyleOption.state & QStyle.State_HasFocus
+                    color = QColor()
+
+                    if is_focuse:
+                        color.setNamedColor('#5990EF')
+                    else:
+                        color.setNamedColor('#cecece')
+
+                    QPainter.fillRect(rect, color)
+
+        super().drawPrimitive(QStyle_PrimitiveElement, QStyleOption, QPainter, widget)
+
+
 
 
 class YqCategoryItemBase(QTreeWidgetItem):
@@ -92,7 +121,7 @@ class YqCategoryItemBase(QTreeWidgetItem):
             if isinstance(self, YqFloderItem):
                 color = QColor()
                 if selected:
-                    color.setNamedColor('#550ed1')
+                    color.setNamedColor('#111111')
                 else:
                     color.setNamedColor('#111111')
 

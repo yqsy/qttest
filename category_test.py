@@ -1,8 +1,8 @@
 import sys
 import traceback
 
-from PyQt5.QtCore import Qt, QSize
-from PyQt5.QtGui import QPen, QColor, QIcon, QPixmap
+from PyQt5.QtCore import Qt, QSize, QRect
+from PyQt5.QtGui import QPen, QColor, QIcon, QPixmap, QFont, QFontMetrics
 from PyQt5.QtWidgets import QWidget, QApplication, QHBoxLayout, QTreeWidget, QTreeWidgetItem, QFrame, QScrollBar, \
     QStyle, QProxyStyle, QStyleOptionViewItem
 
@@ -81,6 +81,37 @@ class YqCategoryItemBase(QTreeWidgetItem):
             else:
                 QStyleOption.icon.paint(QPainter, rect, Qt.AlignCenter, QIcon.Normal)
 
+        # 画的时候是根据单个格子画的,但是item类是按照一行来加的
+        # print(QStyleOption.text)
+        draw_text = QStyleOption.text
+
+        rc_text = QRect(rect.right() + 8, QStyleOption.rect.top(), QStyleOption.rect.right() - rect.right() - 20,
+                        QStyleOption.rect.height())
+
+        if draw_text:
+            if isinstance(self, YqFloderItem):
+                color = QColor()
+                if selected:
+                    color.setNamedColor('#550ed1')
+                else:
+                    color.setNamedColor('#111111')
+
+                color.setAlpha(240)
+                QPainter.setPen(color)
+
+                f = QFont()
+
+                f.setStyleStrategy(QFont.PreferBitmap)
+                fm = QFontMetrics(f)
+
+                draw_text = fm.elidedText(draw_text, Qt.ElideRight, rc_text.width())
+
+                QPainter.save()
+                QPainter.setPen(color)
+                QPainter.setFont(f)
+                QPainter.drawText(rc_text, Qt.AlignVCenter & Qt.TextSingleLine, draw_text)
+                QPainter.restore()
+
 
 class YqFloderItem(YqCategoryItemBase):
     def __init__(self, *args, **kwargs):
@@ -103,6 +134,7 @@ class YqCategoryBaseView(QTreeWidget):
         # If this property is true the treeview will animate expansion and collapsing of branches.
         # If this property is false, the treeview will expand or collapse branches immediately
         # without showing the animation.
+        # 这个是展开的特效哦
         self.setAnimated(True)
 
         # QFrame Sets the frame style to style.
@@ -165,16 +197,16 @@ class MyWidget(QWidget):
         hbox.addWidget(treewidget)
         self.setLayout(hbox)
 
-        num = 0
+        treewidget.setColumnCount(1)
 
-        for _ in range(10):
-            treewidget.addTopLevelItem(YqFloderItem([str(num)]))
-            num = num + 1
+        item1 = YqFloderItem(['你好啊'])
+        treewidget.addTopLevelItem(item1)
 
-        root = treewidget.invisibleRootItem()
+        item2 = YqFloderItem(['hello world'])
+        item1.addChild(item2)
 
-        for _ in range(3):
-            root.addChild(YqFloderItem(root, [str(num)]))
+        item3 = YqFloderItem(['こんにちは'])
+        item2.addChild(item3)
 
 
 def main():

@@ -88,7 +88,9 @@ class MyWidget(QWidget):
 
         row1_1_1 = ['SZ000002 万科A', '', '买入', '1183.00', '100/100', '1', '', '']
         for idx, ele in enumerate(row1_1_1):
+            # 每一个元素都是一个item!!!!!!!!!!
             row1_1_1[idx] = QStandardItem(ele)
+
 
         root.appendRow(row1)
         row1[0].appendRow(row1_1)

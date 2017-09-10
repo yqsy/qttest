@@ -1,6 +1,20 @@
 import sys
 import traceback
-from PyQt5.QtWidgets import QWidget, QApplication, QVBoxLayout, QTreeWidget, QTreeWidgetItem
+from PyQt5.QtWidgets import QWidget, QApplication, QVBoxLayout, QTreeWidget, QTreeWidgetItem, QProxyStyle, \
+    QStyleOptionViewItem
+
+
+class YqStyle(QProxyStyle):
+    def drawControl(self, QStyle_ControlElement, QStyleOption, QPainter, widget=None):
+        super().drawControl(QStyle_ControlElement, QStyleOption, QPainter, widget)
+
+        # print(QStyle_ControlElement)
+
+        # 这里的画是按照一行一画的
+        if isinstance(QStyleOption, QStyleOptionViewItem):
+            item = widget.itemFromIndex(QStyleOption.index)
+            for i in range(item.columnCount()):
+                print(item.text(i))
 
 
 class MyWidget(QWidget):
@@ -22,6 +36,8 @@ class MyWidget(QWidget):
 
         item2 = QTreeWidgetItem(['1', '2', '3'])
         item1.addChild(item2)
+
+        treewidget.setStyle(YqStyle())
 
 
 def main():

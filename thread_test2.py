@@ -33,7 +33,8 @@ class MyThread(QThread):
         self.exec_()
 
 
-# 要搞懂的问题!! parent() 和 moveToThread 概念是否一样?
+# 要搞懂的问题!! parent() 和 moveToThread 概念是否一样? 不一样吧
+# 下面这个是最佳实践了感觉
 class Controller(QObject):
     begin_work = pyqtSignal()
 

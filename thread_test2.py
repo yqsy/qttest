@@ -1,6 +1,7 @@
 import threading
 
 import time
+import traceback
 
 import sys
 from PyQt5.QtCore import QObject, QThread, pyqtSignal, pyqtSlot
@@ -40,7 +41,9 @@ class Controller(QObject):
         super().__init__()
 
         self.thread = MyThread()
-        self.work = Work(self)
+
+        # The object cannot be moved if it has a parent.
+        self.work = Work()
 
         self.work.moveToThread(self.thread)
 
@@ -58,13 +61,17 @@ class Controller(QObject):
 # http://pyqt.sourceforge.net/Docs/PyQt5/signals_slots.html
 # 没有使用到线程,直接在主线程的processEvents上执行
 def main():
-    print('main id {}'.format(threading.get_ident()))
+    sys.excepthook = traceback.print_exception
+
+    print('main thread id {}'.format(threading.get_ident()))
 
     controller = Controller()
 
     controller.begin_work.emit()
 
-    QApplication.processEvents()
+    app = QApplication(sys.argv)
+
+    sys.exit(app.exec_())
 
 
 if __name__ == '__main__':

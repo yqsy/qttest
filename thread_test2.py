@@ -8,9 +8,9 @@ from PyQt5.QtWidgets import QApplication
 
 
 class Work(QObject):
-    def __init__(self,*args, **kwargs):
+    def __init__(self, *args, **kwargs):
         super(Work, self).__init__(*args, **kwargs)
-    
+
     result_ready = pyqtSignal(str)
 
     @pyqtSlot()
@@ -22,20 +22,30 @@ class Work(QObject):
         self.result_ready.emit('okokok')
 
 
+class MyThread(QThread):
+    def __init__(self, *args, **kwargs):
+        super(MyThread, self).__init__(*args, **kwargs)
+
+    def run(self):
+        print('MyThread thread id {}'.format(threading.get_ident()))
+
+        self.exec_()
+        
+
+
 class Controller(QObject):
     begin_work = pyqtSignal()
 
     def __init__(self):
         super().__init__()
         self.work = Work(self)
-        self.thread = QThread(self)
+        self.thread = MyThread(self)
 
-        self.work.moveToThread(self.thread)
         self.begin_work.connect(self.work.do_work)
+        self.work.moveToThread(self.thread)
 
         self.work.result_ready.connect(self.handle_results)
         self.thread.start()
-
 
     @pyqtSlot(str)
     def handle_results(self, result):

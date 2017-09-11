@@ -25,10 +25,14 @@ class Controller(QObject):
     def __init__(self):
         super().__init__()
         self.work = Work()
+        #self.thread = QThread()
 
+        #self.work.moveToThread(self.thread)
         self.begin_work.connect(self.work.do_work)
 
         self.work.result_ready.connect(self.handle_results)
+        #self.thread.start()
+
 
     @pyqtSlot(str)
     def handle_results(self, result):

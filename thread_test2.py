@@ -30,22 +30,23 @@ class MyThread(QThread):
         print('MyThread thread id {}'.format(threading.get_ident()))
 
         self.exec_()
-        
 
-
+# 要搞懂的问题!! parent() 和 moveToThread 概念是否一样?
 class Controller(QObject):
     begin_work = pyqtSignal()
 
     def __init__(self):
         super().__init__()
-        self.work = Work(self)
+
+
         self.thread = MyThread(self)
+        self.work = Work(self.thread)
+        #self.work.moveToThread(self.thread)
+        self.thread.start()
 
         self.begin_work.connect(self.work.do_work)
-        self.work.moveToThread(self.thread)
 
         self.work.result_ready.connect(self.handle_results)
-        self.thread.start()
 
     @pyqtSlot(str)
     def handle_results(self, result):

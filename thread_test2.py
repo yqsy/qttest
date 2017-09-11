@@ -7,6 +7,9 @@ import sys
 from PyQt5.QtCore import QObject, QThread, pyqtSignal, pyqtSlot
 from PyQt5.QtWidgets import QApplication
 
+"""
+这个例子是work带slot 开启工作,把work move到线程上,再用signal 触发 slot, 再触发work的 signal 表示工作完成了
+"""
 
 class Work(QObject):
     def __init__(self, *args, **kwargs):
@@ -60,7 +63,6 @@ class Controller(QObject):
 
 
 # http://pyqt.sourceforge.net/Docs/PyQt5/signals_slots.html
-# 没有使用到线程,直接在主线程的processEvents上执行
 def main():
     sys.excepthook = traceback.print_exception
 

@@ -8,6 +8,9 @@ from PyQt5.QtWidgets import QApplication
 
 
 class Work(QObject):
+    def __init__(self,*args, **kwargs):
+        super(Work, self).__init__(*args, **kwargs)
+    
     result_ready = pyqtSignal(str)
 
     @pyqtSlot()
@@ -24,14 +27,14 @@ class Controller(QObject):
 
     def __init__(self):
         super().__init__()
-        self.work = Work()
-        #self.thread = QThread()
+        self.work = Work(self)
+        self.thread = QThread(self)
 
-        #self.work.moveToThread(self.thread)
+        self.work.moveToThread(self.thread)
         self.begin_work.connect(self.work.do_work)
 
         self.work.result_ready.connect(self.handle_results)
-        #self.thread.start()
+        self.thread.start()
 
 
     @pyqtSlot(str)

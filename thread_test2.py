@@ -43,11 +43,11 @@ class Controller(QObject):
         self.work = Work(self)
 
         self.work.moveToThread(self.thread)
-        self.thread.start()
 
         self.begin_work.connect(self.work.do_work)
 
         self.work.result_ready.connect(self.handle_results)
+        self.thread.start()
 
     @pyqtSlot(str)
     def handle_results(self, result):

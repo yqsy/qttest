@@ -26,11 +26,23 @@ class Worker(QObject):
         print('xxx')
 
 
+class CCC():
+    def __del__(self):
+        print('ccc del')
+
+
+def fuck():
+    ccc = CCC()
+
 def main():
     app = QApplication(sys.argv)
 
     worker = Worker()
 
+    fuck()
+
+    # 猜测是exec_里面会不断的回收没有parent的资源(当然是qt的垃圾回收,和python自己的垃圾回收不要扯上,那是gc,有空研究~)
+    # !!! 怎么好像python自己的回收也是及时的?
     sys.exit(app.exec_())
 
 

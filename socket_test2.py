@@ -1,18 +1,18 @@
 """
 测试触发信号
-void	connected()
-void	disconnected()
+*void	connected()
+*void	disconnected()
 void	error(QAbstractSocket::SocketError socketError)
 void	hostFound()
 void	proxyAuthenticationRequired(const QNetworkProxy &proxy, QAuthenticator *authenticator)
 void	stateChanged(QAbstractSocket::SocketState socketState)
 
 void	aboutToClose()
-void	bytesWritten(qint64 bytes)
+*void	bytesWritten(qint64 bytes)
 void	channelBytesWritten(int channel, qint64 bytes)
 void	channelReadyRead(int channel)
 void	readChannelFinished()
-void	readyRead()
+*void	readyRead()
 
 void	destroyed(QObject *obj = Q_NULLPTR)
 void	objectNameChanged(const QString &objectName)

@@ -44,7 +44,7 @@ class Controller(QObject):
     def __init__(self):
         super().__init__()
 
-        self.thread = MyThread()
+        self.thread = MyThread(self)
 
         # The object cannot be moved if it has a parent.
         self.work = Work()

@@ -33,7 +33,7 @@ class SocketTest(QObject):
         self.socket = QTcpSocket(self)
 
         def connected():
-            print('connected')
+            print('connected , local port:{}'.format(self.socket.localPort()))
             self.socket.write('fuck u'.encode(encoding='utf8'))
 
         def disconnect():
@@ -46,6 +46,9 @@ class SocketTest(QObject):
 
             self.socket.close()
 
+        def reconnect():
+            self.socket.connectToHost('202.5.19.132', 22)
+
         @pyqtSlot(int)
         def bytes_written(bytes):
             print('{} bytes send'.format(bytes))
@@ -54,6 +57,8 @@ class SocketTest(QObject):
         self.socket.disconnected.connect(disconnect)
         self.socket.readyRead.connect(ready_ready)
         self.socket.bytesWritten.connect(bytes_written)
+
+        self.socket.disconnected.connect(reconnect)
 
         self.socket.connectToHost('202.5.19.132', 22)
 

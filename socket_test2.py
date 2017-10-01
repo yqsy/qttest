@@ -39,8 +39,8 @@ class QDebug(object):
     pass
 
 
-IP = '202.5.19.132'
-
+IP = '45.32.17.217'
+PORT = 8000
 
 class SocketTest(QObject):
     def __init__(self, parent=None):
@@ -56,7 +56,7 @@ class SocketTest(QObject):
         def disconnect():
             logger.info('disconnected')
 
-            self.socket.connectToHost(IP, 443)
+            self.socket.connectToHost(IP, PORT)
 
         @pyqtSlot(QAbstractSocket.SocketError)
         def error(err):
@@ -107,7 +107,7 @@ class SocketTest(QObject):
         def ready_ready():
             logger.info('ready read', end=': ')
 
-            logger.info(self.socket.readAll())
+            #logger.info(self.socket.readAll(q))
 
             self.socket.close()
 
@@ -115,13 +115,13 @@ class SocketTest(QObject):
         def bytes_written(bytes):
             logger.info('{} bytes send'.format(bytes))
 
-        self.socket.connected.connect(connected)
-        self.socket.disconnected.connect(disconnect)
+        #self.socket.connected.connect(connected)
+        #self.socket.disconnected.connect(disconnect)
         self.socket.stateChanged.connect(_state_changed)
         self.socket.error.connect(error)
         # self.socket.readyRead.connect(ready_ready)
         # self.socket.bytesWritten.connect(bytes_written)
-        self.socket.connectToHost(IP, 443)
+        self.socket.connectToHost(IP, PORT)
 
 
 def main():

@@ -6,6 +6,9 @@ from PyQt5.QtNetwork import QTcpSocket
 from PyQt5.QtWidgets import QApplication
 
 
+IP = '192.168.1.4'
+PORT = 17990
+
 class SocketTest(QObject):
     def __init__(self, parent=None):
         super(SocketTest, self).__init__(parent)
@@ -13,7 +16,7 @@ class SocketTest(QObject):
     def connect(self):
         self.socket = QTcpSocket(self)
 
-        self.socket.connectToHost('202.5.19.132', 22)
+        self.socket.connectToHost(IP, PORT)
 
         if self.socket.waitForConnected(3000):
             print('Connected')
@@ -23,6 +26,7 @@ class SocketTest(QObject):
 
         else:
             print('Not Connected')
+
 
 
 def main():

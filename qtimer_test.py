@@ -16,6 +16,7 @@ class TimerTest(QObject):
         self.timer = QTimer(self)
         self.timer.timeout.connect(self._timer_out)
         self.timer.start(1000)
+        self.timer.stop()
 
     def _timer_out(self):
         print('timer out, thread id: ', threading.get_ident())

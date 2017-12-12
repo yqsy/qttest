@@ -16,15 +16,17 @@ logger = logging.getLogger()
 
 
 class Test1(QObject):
-    testsignal = pyqtSignal()
+    testsignal = pyqtSignal('PyQt_PyObject')
 
     def __init__(self):
         super(Test1, self).__init__()
 
-    @pyqtSlot()
-    def slot1(self):
-        logger.debug('slot1')
-
+    @pyqtSlot('PyQt_PyObject')
+    def slot1(self, sender):
+        if sender == '111':
+            logger.debug('yes')
+        else:
+            logger.debug('no:{}'.format(sender))
 
 class MyWidget(QWidget):
     def __init__(self):
@@ -50,11 +52,14 @@ def main():
 
     # 重复两次连接 会产生两次事件
     test1.testsignal.connect(test1.slot1)
-    test1.testsignal.connect(test1.slot1)
+
+    #test1.testsignal.connect(test1.slot1)
+
+    # print(dir(test1.testsignal))
 
     # disconnect一次会把所有这个函数的事件删掉
-    test1.testsignal.disconnect(test1.slot1)
-    test1.testsignal.emit()
+    # test1.testsignal.disconnect(test1.slot1)
+    test1.testsignal.emit('123')
     # widget = MyWidget()
     # widget.show()
     sys.exit(app.exec_())
